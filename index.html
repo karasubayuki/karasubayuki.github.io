@@ -1,0 +1,55 @@
+---
+layout: default
+---
+<main id="main">
+  <section class="hero" aria-labelledby="author-name">
+    <div class="hero-copy">
+      <h1 id="author-name">{{ site.author | escape }}</h1>
+    </div>
+    <div class="hero-art">{% include wing.svg %}</div>
+    <p class="hero-signature" lang="ja">烏羽雪</p>
+  </section>
+
+  <section id="contacts" class="contacts" aria-label="Контакты">
+    <div class="contact-list">
+      {% if site.example_data %}
+      <div class="contact-row is-example">
+        <span class="contact-info"><span class="contact-label">Электронная почта <span class="example-tag">пример</span></span><span class="contact-value">{{ site.email | escape }}</span></span>
+        <span class="contact-arrow" aria-hidden="true">↗</span>
+      </div>
+      <div class="contact-row is-example">
+        <span class="contact-info"><span class="contact-label">Telegram <span class="example-tag">пример</span></span><span class="contact-value">@{{ site.telegram_username | escape }}</span></span>
+        <span class="contact-arrow" aria-hidden="true">↗</span>
+      </div>
+      {% else %}
+      <a class="contact-row" href="mailto:{{ site.email | escape }}">
+        <span class="contact-info"><span class="contact-label">Электронная почта</span><span class="contact-value">{{ site.email | escape }}</span></span>
+        <span class="contact-arrow" aria-hidden="true">↗</span>
+      </a>
+      <a class="contact-row" href="https://t.me/{{ site.telegram_username | escape }}" target="_blank" rel="noopener noreferrer">
+        <span class="contact-info"><span class="contact-label">Telegram</span><span class="contact-value">@{{ site.telegram_username | escape }}</span></span>
+        <span class="contact-arrow" aria-hidden="true">↗</span>
+      </a>
+      {% endif %}
+    </div>
+  </section>
+
+  {% if site.posts.size > 0 %}
+  <section class="notes" aria-labelledby="notes-title">
+    <div class="section-intro">
+      <p class="eyebrow">Записи и анонсы</p>
+      <h2 id="notes-title">Из записной книжки</h2>
+    </div>
+    <ol class="notes-list">
+      {% for post in site.posts %}
+      <li>
+        <a class="note-link" href="{{ post.url | relative_url }}">
+          <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: '%d.%m.%Y' }}</time>
+          <span>{{ post.title | escape }}</span><span aria-hidden="true">↗</span>
+        </a>
+      </li>
+      {% endfor %}
+    </ol>
+  </section>
+  {% endif %}
+</main>
