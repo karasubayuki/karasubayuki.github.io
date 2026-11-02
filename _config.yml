@@ -15,7 +15,7 @@ telegram_username: "karasubayuki"
 # Для репозитория YOUR-USERNAME.github.io: baseurl: ""
 # Для репозитория writer-site: baseurl: "/writer-site"
 # При подключении собственного домена: url: "https://ваш-домен.ru", baseurl: ""
-url: "https://karasubayuki.github.io"
+url: "https://karasubayuki.ru"
 baseurl: ""
 
 markdown: kramdown
