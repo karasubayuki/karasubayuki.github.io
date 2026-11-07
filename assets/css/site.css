@@ -75,10 +75,7 @@ svg { display: block; }
 .contact-info { min-width: 0; display: grid; gap: 4px; }
 .contact-label { font-size: 11px; letter-spacing: .035em; color: var(--muted); }
 .contact-value { font-size: clamp(19px, 2vw, 25px); font-weight: 350; letter-spacing: -.025em; overflow-wrap: anywhere; transition: color .18s ease; }
-.contact-arrow { flex: 0 0 auto; color: #c4cdd7; font-size: 27px; font-weight: 300; transition: transform .18s ease; }
 a.contact-row:hover .contact-value { color: #b8cce5; }
-a.contact-row:hover .contact-arrow { transform: translate(3px, -3px); }
-.is-example .contact-arrow { opacity: .3; }
 .example-tag { font-size: 9px; margin-left: 9px; color: #a2afc1; border: 1px solid #3a4657; border-radius: 3px; padding: 1px 5px 2px; letter-spacing: .02em; }
 .notes-list { margin: 0; padding: 0; list-style: none; }
 .notes-list li + li { border-top: 1px solid var(--line); }
@@ -137,7 +134,6 @@ a.contact-row:hover .contact-arrow { transform: translate(3px, -3px); }
   .contact-row + .contact-row { border-top: 1px solid var(--line); }
   .contact-value { font-size: 21px; }
   .contact-label { font-size: 10px; }
-  .contact-arrow { font-size: 25px; }
   .note-link { grid-template-columns: 1fr 20px; gap: 8px 16px; }
   .note-link time { grid-column: 1 / -1; }
   .note-link span:nth-child(2) { font-size: 23px; }
