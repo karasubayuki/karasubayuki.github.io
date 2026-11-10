@@ -1,0 +1,64 @@
+# Все личные данные меняются здесь. Сохраняйте файл в UTF-8.
+title: "Карасуба Юки"
+author: "Карасуба Юки"
+description: "Карасуба Юки. Контакты: электронная почта и Telegram."
+lang: ru
+timezone: Europe/Kaliningrad
+
+# true: показывать пометки «пример» и отключать ссылки контактов.
+# После замены всех трёх значений ниже установите false.
+example_data: false
+email: "contact@karasubayuki.ru"
+telegram_username: "karasubayuki"
+
+# Настроено для аккаунта karasubayuki и репозитория karasubayuki.github.io.
+# Для репозитория YOUR-USERNAME.github.io: baseurl: ""
+# Для репозитория writer-site: baseurl: "/writer-site"
+# При подключении собственного домена: url: "https://ваш-домен.ru", baseurl: ""
+url: "https://karasubayuki.ru"
+baseurl: ""
+
+markdown: kramdown
+highlighter: rouge
+permalink: /notes/:year/:month/:day/:title/
+future: false
+show_drafts: false
+strict_front_matter: true
+collections:
+  works:
+    output: true
+    permalink: /:name/
+  texts:
+    output: false
+    permalink: /:name/text/
+defaults:
+  - scope:
+      path: ""
+      type: texts
+    values:
+      layout: text
+      show_home_link: true
+      show_sections: true
+  - scope:
+      path: ""
+      type: works
+    values:
+      layout: work
+      show_home_link: true
+      show_sections: true
+  - scope:
+      path: ""
+      type: posts
+    values:
+      layout: post
+exclude:
+  - README.md
+  - Gemfile
+  - Gemfile.lock
+  - vendor
+  - preview
+  - templates
+  - .github
+  - .gitignore
+  - .bundle
+  - .ruby-version

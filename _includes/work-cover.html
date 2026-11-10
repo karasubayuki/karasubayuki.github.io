@@ -1,0 +1,11 @@
+{% assign cover_file = site.static_files | where: 'path', include.work.cover | first %}
+<div class="work-cover{% unless cover_file %} work-cover--placeholder{% endunless %}{% if include.compact %} entry-cover{% endif %}">
+  {% if cover_file %}
+  <img src="{{ cover_file.path | relative_url }}" alt="{% unless include.compact %}Обложка произведения «{{ include.work.title | escape }}»{% endunless %}" width="600" height="900"{% if include.compact %} loading="lazy"{% endif %}>
+  {% else %}
+  <div class="cover-placeholder"{% if include.compact %} aria-hidden="true"{% else %} role="img" aria-label="Обложка произведения пока не добавлена"{% endif %}>
+    <span class="cover-placeholder-mark" aria-hidden="true">{% include snow.svg %}</span>
+    <span class="cover-placeholder-label" aria-hidden="true">Пока без обложки</span>
+  </div>
+  {% endif %}
+</div>

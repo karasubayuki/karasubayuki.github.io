@@ -1,0 +1,32 @@
+---
+layout: default
+show_sections: true
+---
+<main id="main">
+  <section class="hero" aria-labelledby="author-name">
+    <div class="hero-copy">
+      <h1 id="author-name">{{ site.author | escape }}</h1>
+    </div>
+    <div class="hero-art">{% include wing.svg %}</div>
+  </section>
+
+  <section id="contacts" class="contacts" aria-label="Контакты">
+    <div class="contact-list">
+      {% if site.example_data %}
+      <div class="contact-row is-example">
+        <span class="contact-info"><span class="contact-label">Электронная почта <span class="example-tag">пример</span></span><span class="contact-value">{{ site.email | escape }}</span></span>
+      </div>
+      <div class="contact-row is-example">
+        <span class="contact-info"><span class="contact-label">Telegram <span class="example-tag">пример</span></span><span class="contact-value">@{{ site.telegram_username | escape }}</span></span>
+      </div>
+      {% else %}
+      <a class="contact-row" href="mailto:{{ site.email | escape }}">
+        <span class="contact-info"><span class="contact-label">Электронная почта</span><span class="contact-value">{{ site.email | escape }}</span></span>
+      </a>
+      <a class="contact-row" href="https://t.me/{{ site.telegram_username | escape }}" target="_blank" rel="noopener noreferrer">
+        <span class="contact-info"><span class="contact-label">Telegram</span><span class="contact-value">@{{ site.telegram_username | escape }}</span></span>
+      </a>
+      {% endif %}
+    </div>
+  </section>
+</main>

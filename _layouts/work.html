@@ -1,0 +1,36 @@
+---
+layout: default
+---
+<main id="main" class="work-main">
+  <article class="work" aria-labelledby="work-title">
+    {% include work-cover.html work=page %}
+    <div class="work-details">
+      <h1 id="work-title">{{ page.title | escape }}</h1>
+      <dl class="work-meta">
+        <div>
+          <dt>Жанр</dt>
+          <dd>{{ page.genre | default: 'Не указан' | escape }}</dd>
+        </div>
+        <div>
+          <dt>Объём</dt>
+          <dd>{{ page.volume | default: 'Не указан' | escape }}</dd>
+        </div>
+      </dl>
+      <section class="work-annotation" aria-labelledby="annotation-title">
+        <h2 id="annotation-title">Аннотация</h2>
+        <div class="prose">{{ content }}</div>
+      </section>
+      {% if page.read_enabled != false or page.second_button_enabled == true %}
+      <div class="work-actions">
+        {% if page.read_enabled != false %}
+        {% include work-button.html text=page.read_text url=page.read_url %}
+        {% endif %}
+        {% if page.second_button_enabled == true %}
+        {% assign second_text = page.second_button_text | default: 'Подробнее' %}
+        {% include work-button.html text=second_text url=page.second_button_url %}
+        {% endif %}
+      </div>
+      {% endif %}
+    </div>
+  </article>
+</main>

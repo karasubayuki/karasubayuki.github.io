@@ -1,0 +1,9 @@
+{% assign button_url = include.url | default: '/404.html' %}
+{% assign prefix = button_url | slice: 0, 1 %}
+{% assign prefix_two = button_url | slice: 0, 2 %}
+{% if prefix == '#' or prefix == '?' or prefix_two == '//' %}
+  {% assign button_href = button_url %}
+{% else %}
+  {% assign button_href = button_url | relative_url %}
+{% endif %}
+<a class="header-link read-button" href="{{ button_href | escape }}">{{ include.text | default: 'Читать' | escape }}</a>

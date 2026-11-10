@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="{{ site.lang | default: 'ru' }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#080e17">
+  <title>{% if page.title %}{{ page.title | escape }} — {% endif %}{{ site.title | escape }}</title>
+  <meta name="description" content="{{ page.description | default: site.description | escape }}">
+  <link rel="icon" href="{{ '/assets/favicon.svg' | relative_url }}" type="image/svg+xml">
+  <link rel="stylesheet" href="{{ '/assets/css/site.css' | relative_url }}">
+</head>
+<body id="top">
+  <a class="skip-link" href="#main">Перейти к содержимому</a>
+  <div class="page-shell">
+    <header class="site-header{% if page.work_url %} site-header--reading{% endif %}">
+      <div class="header-start">
+        <a class="wordmark" href="{{ '/' | relative_url }}" aria-label="Главная страница">
+          {% include snow.svg %}
+        </a>
+        {% if page.work_url %}
+        <div class="header-page-links">
+          {% if page.show_home_link %}
+          <a class="header-link" href="{{ '/' | relative_url }}">Главная</a>
+          {% endif %}
+          <a class="header-link work-back-link" href="{{ page.work_url | relative_url | escape }}">К произведению</a>
+        </div>
+        {% elsif page.show_home_link %}
+        <a class="header-link" href="{{ '/' | relative_url }}">Главная</a>
+        {% endif %}
+      </div>
+      {% if page.show_sections %}
+      <nav class="section-nav" aria-label="Разделы">
+        <a class="header-link" href="{{ '/literature/' | relative_url }}"{% if page.url == '/literature/' %} aria-current="page"{% endif %}>Литература</a>
+      </nav>
+      {% endif %}
+    </header>
+    <div class="page-body">
+      <div class="page-content{% if page.url == '/' %} page-content--home{% endif %}">
+        {{ content }}
+      </div>
+      <p class="site-signature" lang="ja">烏羽雪</p>
+    </div>
+  </div>
+</body>
+</html>

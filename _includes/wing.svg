@@ -1,0 +1,53 @@
+<svg class="wing-art" viewBox="0 0 500 500" fill="none" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="feather-ink" x1="89" y1="272" x2="420" y2="120" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#c4ceda" stop-opacity=".7"/>
+      <stop offset=".46" stop-color="#a8bbd0" stop-opacity=".55"/>
+      <stop offset="1" stop-color="#edf0f1" stop-opacity=".82"/>
+    </linearGradient>
+    <radialGradient id="feather-light">
+      <stop stop-color="#1b2a3f" stop-opacity=".48"/>
+      <stop offset="1" stop-color="#0b121e" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <circle cx="263" cy="244" r="215" fill="url(#feather-light)"/>
+  <circle cx="263" cy="244" r="194" stroke="#a8b6c7" stroke-opacity=".08"/>
+  <!-- Low left quill, lifted right tip, with no fringe at the base. -->
+  <g stroke="url(#feather-ink)" stroke-width=".75" stroke-linecap="round" opacity=".28">
+    <path d="M133 278C220 240 374 210 420 120"/>
+    <path d="M133 278C205 380 436 385 420 120"/>
+  </g>
+  <g stroke="url(#feather-ink)" stroke-width=".85" stroke-linecap="round" opacity=".65">
+    <path d="M146.68 285.57C152.75 282.36 170.88 267.47 180.34 259.69"/>
+    <path d="M180.66 295.05C186.68 286.72 204.67 261.17 214.05 247.85"/>
+    <path d="M219.15 295.49C224.33 284.05 240.60 252.03 249.08 235.35"/>
+    <path d="M259.91 287.10C263.75 274.41 277.20 239.76 284.23 221.71"/>
+    <path d="M300.73 270.12C302.94 257.84 313.03 224.07 318.29 206.47"/>
+    <path d="M339.36 244.74C339.93 234.40 346.60 204.67 350.09 189.17"/>
+    <path d="M373.58 211.19C372.74 204.15 376.46 181.27 378.42 169.34"/>
+    <path d="M401.16 169.69C399.38 167.13 401.14 153.59 402.08 146.52"/>
+    <path d="M146.68 285.57C156.52 296.72 171.56 311.75 179.35 319.53"/>
+    <path d="M180.66 295.05C191.47 307.82 208.53 326.25 217.37 335.79"/>
+    <path d="M219.15 295.49C230.64 309.81 249.10 331.45 258.68 342.67"/>
+    <path d="M259.91 287.10C271.65 302.55 290.64 326.54 300.49 338.98"/>
+    <path d="M300.73 270.12C312.16 285.94 330.51 310.70 340.03 323.54"/>
+    <path d="M339.36 244.74C349.80 259.85 366.08 283.12 374.53 295.18"/>
+    <path d="M373.58 211.19C382.21 224.16 394.73 242.96 401.22 252.71"/>
+    <path d="M401.16 169.69C407.04 178.75 413.81 189.43 417.31 194.94"/>
+  </g>
+  <path d="M66 249C84 262 108 274 133 278C211 330 382 270 420 120" stroke="url(#feather-ink)" stroke-width="1.1" stroke-linecap="round"/>
+  <g fill="#f2f3f0">
+    <circle cx="106" cy="111" r="1.4" fill-opacity=".6"/>
+    <circle cx="194" cy="78" r=".9" fill-opacity=".5"/>
+    <circle cx="298" cy="106" r="1.6" fill-opacity=".8"/>
+    <circle cx="388" cy="70" r="1.1" fill-opacity=".5"/>
+    <circle cx="447" cy="190" r="2" fill-opacity=".7"/>
+    <circle cx="417" cy="358" r="1.8" fill-opacity=".85"/>
+    <circle cx="346" cy="414" r=".9" fill-opacity=".45"/>
+    <circle cx="230" cy="398" r="1.5" fill-opacity=".7"/>
+    <circle cx="96" cy="357" r="1" fill-opacity=".6"/>
+    <circle cx="72" cy="212" r="1.6" fill-opacity=".8"/>
+    <circle cx="303" cy="354" r="1" fill-opacity=".5"/>
+    <circle cx="181" cy="156" r=".9" fill-opacity=".55"/>
+  </g>
+</svg>

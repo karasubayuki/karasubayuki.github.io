@@ -1,0 +1,50 @@
+---
+layout: default
+title: "Литература"
+description: "Произведения раздела «Литература»."
+permalink: /literature/
+show_home_link: true
+show_sections: true
+---
+<main id="main" class="literature-main" aria-label="{{ page.title | escape }}">
+  {% assign published_works = site.works | where_exp: 'work', 'work.published != false' | where_exp: 'work', 'work.date <= site.time' | sort: 'date' | reverse %}
+  <div class="listing-controls">
+    <div class="sort-control">
+      <button id="literature-sort" class="sort-toggle" type="button" aria-label="Сортировка произведений" aria-haspopup="menu" aria-expanded="false" aria-controls="sort-options">
+        <span class="sort-label">по дате</span>
+        <svg class="sort-arrow" width="10" height="6" viewBox="0 0 10 6" aria-hidden="true" focusable="false">
+          <path d="M.75 .75 5 5 9.25 .75" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </button>
+      <div id="sort-options" class="sort-options" role="menu" aria-label="Порядок произведений" hidden>
+        <button class="sort-option" type="button" role="menuitemradio" aria-checked="false" data-sort="title" tabindex="-1">по алфавиту</button>
+        <button class="sort-option" type="button" role="menuitemradio" aria-checked="true" data-sort="date" tabindex="-1">по дате</button>
+      </div>
+    </div>
+  </div>
+  <div class="listing-main">
+    {% if published_works.size > 0 %}
+    <ol class="entry-list">
+      {% for work in published_works %}
+      <li data-title="{{ work.title | escape }}" data-date="{{ work.date | date: '%s' }}">
+        <a class="entry-link" href="{{ work.url | relative_url }}" aria-labelledby="entry-title-{{ forloop.index }}">
+          {% include work-cover.html work=work compact=true %}
+          <div class="entry-details">
+            <h2 id="entry-title-{{ forloop.index }}">{{ work.title | escape }}</h2>
+            <p class="entry-meta">
+              <span>Жанр: {{ work.genre | default: 'Не указан' | escape }}</span>
+              <span>Объём: {{ work.volume | default: 'Не указан' | escape }}</span>
+            </p>
+            <p class="entry-excerpt">{{ work.content | strip_html | normalize_whitespace | escape_once }}</p>
+            <time class="entry-date" datetime="{{ work.date | date_to_xmlschema }}" aria-label="Дата публикации: {{ work.date | date: '%d.%m.%Y' }}">{{ work.date | date: '%d.%m.%Y' }}</time>
+          </div>
+        </a>
+      </li>
+      {% endfor %}
+    </ol>
+    {% else %}
+    <p class="listing-empty">Здесь пока нет записей.</p>
+    {% endif %}
+  </div>
+</main>
+<script src="{{ '/assets/js/literature.js' | relative_url }}" defer></script>

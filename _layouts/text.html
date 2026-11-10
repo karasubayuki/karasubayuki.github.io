@@ -1,0 +1,17 @@
+---
+layout: default
+---
+<main id="main" class="text-main" data-reader-manifest="{{ page.text_manifest | relative_url | escape }}">
+  <article class="reading-text prose" aria-label="{{ page.title | escape }}" aria-busy="false"></article>
+  <p class="text-status" role="status" hidden>Загрузка текста…</p>
+  <noscript><p>Для постраничного чтения включите JavaScript в браузере.</p></noscript>
+  <nav class="text-pagination" aria-label="Страницы произведения" hidden>
+    <a class="header-link text-previous" rel="prev" aria-label="Предыдущая страница" hidden>←</a>
+    <div class="text-page-control">
+      <button class="header-link text-page-button" type="button" aria-label="Изменить номер страницы" aria-controls="text-page-input" aria-expanded="false">1</button>
+      <input id="text-page-input" class="header-link text-page-input" type="text" inputmode="numeric" autocomplete="off" aria-label="Номер страницы" value="1" hidden>
+    </div>
+    <a class="header-link text-next" rel="next" aria-label="Следующая страница" hidden>→</a>
+  </nav>
+</main>
+<script src="{{ '/assets/js/text-pages.js' | relative_url }}" defer></script>
