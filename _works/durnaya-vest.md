@@ -9,8 +9,12 @@ show_sections: true
 genre: "мистика, психологический хоррор"
 volume: "46 158 знаков"
 cover: "/assets/images/covers/durnaya-vest-cover.png"
+read_enabled: true
 read_text: "Читать здесь"
 read_url: "/durnaya-vest/text/"
+second_button_enabled: true
+second_button_text: "Читать на author.today"
+second_button_url: "https://author.today/work/680499"
 ---
 
 Неудачи случаются одна за одной. Воображение рисует пугающие картины будущего. Снятся кошмары. Сколько существует способов борьбы с тревожностью? Аффирмации, визуализация, спасение мира. Я перепробовал их все.
