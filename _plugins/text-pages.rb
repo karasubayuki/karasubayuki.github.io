@@ -1,8 +1,9 @@
 # encoding: UTF-8
 require 'cgi'
 require 'json'
+require 'digest'
 
-# Render Markdown at build time; the reader loads blocks as it measures visible lines.
+# Render Markdown once; ship a small inline start and one complete background bundle.
 module ReadingPages
   class Generator < Jekyll::Generator
     safe true
@@ -50,17 +51,24 @@ module ReadingPages
           part['html'].scan(/\bid=(?:"([^"]*)"|'([^']*)')/).each do |a, b|
             anchors[CGI.unescapeHTML(a || b)] ||= index
           end
-          add_page(site, doc, occupied, "#{root}parts/", "#{index + 1}.json",
-                   JSON.generate(part), 'layout' => nil, 'render_with_liquid' => false)
         end
-        base = site.config.fetch('baseurl', '')
-        manifest = {'format' => 'reading-parts-v1', **settings, 'anchors' => anchors,
-                    'parts' => blocks.each_index.map { |index| "#{base}#{root}parts/#{index + 1}.json" }}
+        revision = Digest::SHA256.hexdigest(JSON.generate([settings, anchors, blocks]))
+        manifest = {'format' => 'reading-bundle-v2', **settings, 'anchors' => anchors,
+                    'revision' => revision, 'part_count' => blocks.length, 'parts' => blocks}
+        initial, characters = [], 0
+        blocks.each do |part|
+          initial << part
+          characters += CGI.unescapeHTML(part['html'].gsub(/<[^>]*>/, '')).length
+          break if characters >= settings.values.max * 160
+        end
+        # Escape '<' so a literal closing script tag in a work cannot end the data element.
+        bootstrap = JSON.generate(manifest.merge('parts' => initial)).gsub('<') { '\\u003c' }
         add_page(site, doc, occupied, root, 'content.json', JSON.generate(manifest),
                  'layout' => nil, 'render_with_liquid' => false)
         add_page(site, doc, occupied, root, 'index.html', '',
                  doc.data.merge(settings).merge('layout' => 'text', 'permalink' => root,
-                   'text_source' => doc.relative_path, 'text_manifest' => "#{root}content.json", 'work_url' => work.url))
+                   'text_source' => doc.relative_path, 'text_manifest' => "#{root}content.json?v=#{revision}",
+                   'text_bootstrap' => bootstrap, 'work_url' => work.url))
       end
     end
 

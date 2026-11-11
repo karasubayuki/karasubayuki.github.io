@@ -17,6 +17,7 @@ telegram_username: "karasubayuki"
 # При подключении собственного домена: url: "https://ваш-домен.ru", baseurl: ""
 url: "https://karasubayuki.ru"
 baseurl: ""
+sitemap: true
 
 markdown: kramdown
 highlighter: rouge

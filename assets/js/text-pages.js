@@ -10,14 +10,19 @@
   const next = nav.querySelector('.text-next');
   const button = nav.querySelector('button');
   const input = nav.querySelector('input');
-  const measure = document.createElement('article');
-  measure.className = 'reading-text prose text-measure';
-  measure.setAttribute('aria-hidden', 'true');
-  document.body.append(measure);
-  const cache = new Map();
+  const measurementArea = () => {
+    const element = document.createElement('article');
+    element.className = 'reading-text prose text-measure';
+    element.setAttribute('aria-hidden', 'true');
+    document.body.append(element);
+    return element;
+  };
+  const measure = measurementArea(), aheadMeasure = measurementArea();
+  const pages = new Map();
   const root = new URL(location.pathname, location.href);
   let manifest, current = 1, total = null, editing = false, serial = 0;
   let starts = [{part: 0, offset: 0}], lastWidth = 0, resizeTimer;
+  let fullText, cancelPreparation = () => {};
   const cancelled = new Error('Superseded reading request');
   const check = token => { if (token !== serial) throw cancelled; };
   const limit = () => matchMedia('(max-width: 600px)').matches
@@ -40,21 +45,42 @@
     return response.json();
   }
 
-  async function blockAt(index, token) {
-    if (!cache.has(index)) {
-      cache.set(index, await readJSON(manifest.parts[index]));
-      if (cache.size > 4) cache.delete(cache.keys().next().value);
+  function validPart(part) {
+    return part && typeof part.html === 'string' && Number.isInteger(part.block)
+      && Number.isInteger(part.join_depth) && part.join_depth >= 0;
+  }
+
+  function loadFullText() {
+    if (!fullText) {
+      main.dataset.textState = 'loading';
+      fullText = readJSON(main.dataset.readerManifest).then(data => {
+        if (data.format !== 'reading-bundle-v2' || data.revision !== manifest.revision
+            || !Array.isArray(data.parts) || data.parts.length !== manifest.parts.length
+            || !data.parts.every(validPart)) throw new Error('Invalid reading bundle');
+        manifest.parts = data.parts;
+        main.dataset.textState = 'ready';
+      }).catch(error => {
+        fullText = null;
+        main.dataset.textState = 'error';
+        throw error;
+      });
     }
+    return fullText;
+  }
+
+  async function blockAt(index, token) {
+    if (!manifest.parts[index]) await loadFullText();
     check(token);
+    const part = manifest.parts[index];
     const template = document.createElement('template');
-    template.innerHTML = cache.get(index).html;
+    template.innerHTML = part.html;
     let block = template.content.firstElementChild;
     if (!block) {
       block = document.createElement('p');
       block.append(template.content);
     }
-    if (block.tagName === 'P' && cache.get(index).join_depth > 0) block.classList.add('reading-continuation');
-    return {block, blockId: cache.get(index).block, joinDepth: cache.get(index).join_depth || 0};
+    if (block.tagName === 'P' && part.join_depth > 0) block.classList.add('reading-continuation');
+    return {block, blockId: part.block, joinDepth: part.join_depth};
   }
 
   function pointAt(block, offset) {
@@ -154,12 +180,18 @@
     return offset;
   }
 
-  async function paginate(start, token) {
+  async function paginate(start, token, area = measure) {
     check(token);
+    const measure = area;
     measure.replaceChildren();
     measure.style.width = article.getBoundingClientRect().width + 'px';
-    let cursor = {...start}, lastBlock = null;
+    let cursor = {...start}, lastBlock = null, sliceStarted = performance.now();
     while (cursor.part < manifest.parts.length) {
+      if (area === aheadMeasure && performance.now() - sliceStarted > 8) {
+        await new Promise(resolve => setTimeout(resolve, 0));
+        check(token);
+        sliceStarted = performance.now();
+      }
       const {block, blockId, joinDepth} = await blockAt(cursor.part, token);
       const length = block.textContent.length;
       const joining = joinDepth > 0 && lastBlock === blockId;
@@ -210,20 +242,54 @@
     return {fragment, end: cursor};
   }
 
-  async function pageAt(number, token) {
+  function remember(number, result) {
+    pages.delete(number);
+    pages.set(number, {fragment: result.fragment.cloneNode(true), end: {...result.end}});
+    while (pages.size > 5) pages.delete(pages.keys().next().value);
+  }
+
+  async function pageAt(number, token, area = measure) {
+    check(token);
     let result;
     while (starts.length < number && total === null) {
       const index = starts.length - 1;
-      result = await paginate(starts[index], token);
+      result = await paginate(starts[index], token, area);
+      check(token);
+      remember(index + 1, result);
       if (result.end.part >= manifest.parts.length) total = index + 1;
       else starts.push(result.end);
       if (starts.length % 20 === 0) await new Promise(resolve => setTimeout(resolve, 0));
     }
     const selected = total === null ? number : Math.min(number, total);
-    result = await paginate(starts[selected - 1], token);
+    if (pages.has(selected)) {
+      const cached = pages.get(selected);
+      result = {fragment: cached.fragment.cloneNode(true), end: {...cached.end}};
+    } else result = await paginate(starts[selected - 1], token, area);
+    check(token);
+    remember(selected, result);
     if (result.end.part >= manifest.parts.length) total = selected;
     else if (starts.length === selected) starts.push(result.end);
     return {number: selected, ...result};
+  }
+
+  function prepareNext(token) {
+    // Let the visible page paint before starting the full download and layout work.
+    const frame = requestAnimationFrame(() => {
+      const timer = setTimeout(async () => {
+        try {
+          check(token);
+          await loadFullText();
+          check(token);
+          if (total !== null && current >= total) return;
+          await pageAt(current + 1, token, aheadMeasure);
+          check(token);
+          main.dataset.preparedPage = String(current + 1);
+        } catch { /* A failed speculative load leaves the current page usable; navigation can retry. */ }
+        finally { if (token === serial) aheadMeasure.replaceChildren(); }
+      }, 0);
+      cancelPreparation = () => clearTimeout(timer);
+    });
+    cancelPreparation = () => cancelAnimationFrame(frame);
   }
 
   function close() {
@@ -235,7 +301,10 @@
   }
 
   async function display(number, {replace = false, scroll = true, anchor = null, hash = ''} = {}) {
+    cancelPreparation();
     const token = ++serial;
+    aheadMeasure.replaceChildren();
+    delete main.dataset.preparedPage;
     close();
     article.setAttribute('aria-busy', 'true');
     main.dataset.readerState = 'loading';
@@ -269,6 +338,7 @@
       if (url !== location.pathname + location.search + location.hash) history[replace ? 'replaceState' : 'pushState'](null, '', url);
       if (hash) document.getElementById(hash)?.scrollIntoView({block:'start',behavior:'instant'});
       else if (scroll) main.scrollIntoView({block:'start',behavior:'instant'});
+      prepareNext(token);
     } catch (error) {
       if (error === cancelled || token !== serial) return;
       main.dataset.readerState = 'error';
@@ -347,6 +417,7 @@
       lastWidth = width;
       starts = [{part:0,offset:0}];
       total = null;
+      pages.clear();
       void display(1, {replace:true, scroll:false, anchor});
     }, 150);
   }
@@ -355,8 +426,11 @@
 
   (async () => {
     try {
-      manifest = await readJSON(main.dataset.readerManifest);
-      if (manifest.format !== 'reading-parts-v1' || !manifest.parts.length) throw new Error('Invalid reading manifest');
+      manifest = JSON.parse(document.getElementById('reader-bootstrap').textContent);
+      if (manifest.format !== 'reading-bundle-v2' || !Number.isInteger(manifest.part_count)
+          || manifest.part_count < 1 || !Array.isArray(manifest.parts) || !manifest.parts.length
+          || manifest.parts.length > manifest.part_count || !manifest.parts.every(validPart)) throw new Error('Invalid reading start');
+      manifest.parts.length = manifest.part_count;
       await document.fonts.ready;
       lastWidth = article.getBoundingClientRect().width;
       await (location.hash ? showHash(location.hash, true) : display(requested(), {replace:true,scroll:false}));
